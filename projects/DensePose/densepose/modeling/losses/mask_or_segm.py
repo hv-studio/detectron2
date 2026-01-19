@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-# pyre-unsafe
-
 from typing import Any, List
 import torch
 

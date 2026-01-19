@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-# pyre-unsafe
-
 from typing import Any, Dict, List, Tuple
 import torch
 from torch.nn import functional as F
@@ -150,10 +148,7 @@ class DensePoseBaseSampler:
         I = (
             (
                 F.interpolate(
-                    output.fine_segm,
-                    (sz, sz),
-                    mode="bilinear",
-                    align_corners=False,
+                    output.fine_segm, (sz, sz), mode="bilinear", align_corners=False
                 ).argmax(dim=1)
                 * (S > 0).long()
             )

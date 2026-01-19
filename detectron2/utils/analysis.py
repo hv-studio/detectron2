@@ -40,7 +40,6 @@ _IGNORED_OPS = {
     "aten::neg",
     "aten::nonzero_numpy",
     "aten::reciprocal",
-    "aten::repeat_interleave",
     "aten::rsub",
     "aten::sigmoid",
     "aten::sigmoid_",

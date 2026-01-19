@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-# pyre-unsafe
-
 import random
 from typing import Tuple
 import torch
@@ -61,9 +59,7 @@ class ShapeToShapeCycleLoss(nn.Module):
 
     def fake_value(self, embedder: nn.Module):
         losses = []
-        # pyre-fixme[29]: `Union[(self: Tensor) -> Any, Module, Tensor]` is not a
-        #  function.
-        for mesh_name in embedder.mesh_names:
+        for mesh_name in embedder.mesh_names:  # pyre-ignore[29]
             losses.append(embedder(mesh_name).sum() * 0)
         return torch.mean(torch.stack(losses))
 
@@ -108,7 +104,7 @@ class ShapeToShapeCycleLoss(nn.Module):
         """
         embeddings_1, geodists_1 = self._get_embeddings_and_geodists_for_mesh(embedder, mesh_name_1)
         embeddings_2, geodists_2 = self._get_embeddings_and_geodists_for_mesh(embedder, mesh_name_2)
-        sim_matrix_12 = embeddings_1.mm(embeddings_2.T)
+        sim_matrix_12 = embeddings_1.mm(embeddings_2.T)  # pyre-ignore[16]
 
         c_12 = F.softmax(sim_matrix_12 / self.temperature, dim=1)
         c_21 = F.softmax(sim_matrix_12.T / self.temperature, dim=1)

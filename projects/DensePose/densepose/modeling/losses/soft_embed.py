@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-# pyre-unsafe
-
 from typing import Any, Dict, List
 import torch
 from torch import nn
@@ -75,7 +73,7 @@ class SoftEmbeddingLoss:
             dict(int -> tensor): losses for different mesh IDs
         """
         losses = {}
-        for mesh_id_tensor in packed_annotations.vertex_mesh_ids_gt.unique():
+        for mesh_id_tensor in packed_annotations.vertex_mesh_ids_gt.unique():  # pyre-ignore[16]
             mesh_id = mesh_id_tensor.item()
             mesh_name = MeshCatalog.get_mesh_name(mesh_id)
             # valid points are those that fall into estimated bbox
@@ -118,8 +116,10 @@ class SoftEmbeddingLoss:
             )
             losses[mesh_name] = (-geodist_softmax_values * embdist_logsoftmax_values).sum(1).mean()
 
-        # pyre-fixme[29]: `Union[(self: Tensor) -> Any, Module, Tensor]` is not a
-        #  function.
+        # pyre-fixme[29]:
+        #  `Union[BoundMethod[typing.Callable(torch.Tensor.__iter__)[[Named(self,
+        #  torch.Tensor)], typing.Iterator[typing.Any]], torch.Tensor], nn.Module,
+        #  torch.Tensor]` is not a function.
         for mesh_name in embedder.mesh_names:
             if mesh_name not in losses:
                 losses[mesh_name] = self.fake_value(
@@ -129,8 +129,10 @@ class SoftEmbeddingLoss:
 
     def fake_values(self, densepose_predictor_outputs: Any, embedder: nn.Module):
         losses = {}
-        # pyre-fixme[29]: `Union[(self: Tensor) -> Any, Module, Tensor]` is not a
-        #  function.
+        # pyre-fixme[29]:
+        #  `Union[BoundMethod[typing.Callable(torch.Tensor.__iter__)[[Named(self,
+        #  torch.Tensor)], typing.Iterator[typing.Any]], torch.Tensor], nn.Module,
+        #  torch.Tensor]` is not a function.
         for mesh_name in embedder.mesh_names:
             losses[mesh_name] = self.fake_value(densepose_predictor_outputs, embedder, mesh_name)
         return losses

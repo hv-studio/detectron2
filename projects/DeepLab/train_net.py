@@ -8,8 +8,10 @@ This script is a simplified version of the training script in detectron2/tools.
 """
 
 import os
+import torch
 
 import detectron2.data.transforms as T
+import detectron2.utils.comm as comm
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import get_cfg
 from detectron2.data import DatasetMapper, MetadataCatalog, build_detection_train_loader
@@ -21,9 +23,7 @@ from detectron2.projects.deeplab import add_deeplab_config, build_lr_scheduler
 def build_sem_seg_train_aug(cfg):
     augs = [
         T.ResizeShortestEdge(
-            cfg.INPUT.MIN_SIZE_TRAIN,
-            cfg.INPUT.MAX_SIZE_TRAIN,
-            cfg.INPUT.MIN_SIZE_TRAIN_SAMPLING,
+            cfg.INPUT.MIN_SIZE_TRAIN, cfg.INPUT.MAX_SIZE_TRAIN, cfg.INPUT.MIN_SIZE_TRAIN_SAMPLING
         )
     ]
     if cfg.INPUT.CROP.ENABLED:
@@ -66,6 +66,9 @@ class Trainer(DefaultTrainer):
                 output_dir=output_folder,
             )
         if evaluator_type == "cityscapes_sem_seg":
+            assert (
+                torch.cuda.device_count() > comm.get_rank()
+            ), "CityscapesEvaluator currently do not work with multiple machines."
             return CityscapesSemSegEvaluator(dataset_name)
         if len(evaluator_list) == 0:
             raise NotImplementedError(
@@ -123,7 +126,7 @@ def main(args):
     return trainer.train()
 
 
-def invoke_main() -> None:
+if __name__ == "__main__":
     args = default_argument_parser().parse_args()
     print("Command Line Args:", args)
     launch(
@@ -134,7 +137,3 @@ def invoke_main() -> None:
         dist_url=args.dist_url,
         args=(args,),
     )
-
-
-if __name__ == "__main__":
-    invoke_main()  # pragma: no cover

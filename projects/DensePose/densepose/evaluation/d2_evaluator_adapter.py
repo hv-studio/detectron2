@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-# pyre-unsafe
-
 from detectron2.data.catalog import Metadata
 from detectron2.evaluation import COCOEvaluator
 
@@ -11,7 +9,7 @@ from densepose.data.datasets.coco import (
 )
 
 
-def _maybe_add_iscrowd_annotations(cocoapi) -> None:
+def _maybe_add_iscrowd_annotations(cocoapi):
     for ann in cocoapi.dataset["annotations"]:
         if "iscrowd" not in ann:
             ann["iscrowd"] = 0

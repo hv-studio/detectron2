@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-# pyre-unsafe
-
 from .chart import DensePoseChartLoss
 from .chart_with_confidences import DensePoseChartWithConfidenceLoss
 from .cse import DensePoseCseLoss
