@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-# pyre-unsafe
-
 from typing import Optional
 from torch import nn
 

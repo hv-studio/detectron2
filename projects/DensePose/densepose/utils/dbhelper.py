@@ -1,10 +1,8 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
-
-# pyre-unsafe
 from typing import Any, Dict, Optional, Tuple
 
 
-class EntrySelector:
+class EntrySelector(object):
     """
     Base class for entry selectors
     """
@@ -51,7 +49,7 @@ class FieldEntrySelector(EntrySelector):
     _EQUAL = "="
     _ERROR_PREFIX = "Invalid field selector specifier"
 
-    class _FieldEntryValuePredicate:
+    class _FieldEntryValuePredicate(object):
         """
         Predicate that checks strict equality for the specified entry field
         """
@@ -66,7 +64,7 @@ class FieldEntrySelector(EntrySelector):
         def __call__(self, entry):
             return entry[self.name] == self.type(self.value)
 
-    class _FieldEntryRangePredicate:
+    class _FieldEntryRangePredicate(object):
         """
         Predicate that checks whether an entry field falls into the specified range
         """

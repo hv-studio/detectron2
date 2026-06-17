@@ -82,7 +82,7 @@ def load_cityscapes_instances(image_dir, gt_dir, from_json=True, to_polygons=Tru
     logger.info("Loaded {} images from {}".format(len(ret), image_dir))
 
     # Map cityscape ids to contiguous ids
-    from deeplearning.projects.cityscapesApi.cityscapesscripts.helpers.labels import labels
+    from cityscapesscripts.helpers.labels import labels
 
     labels = [l for l in labels if l.hasInstances and not l.ignoreInEval]
     dataset_id_to_contiguous_id = {l.id: idx for idx, l in enumerate(labels)}
@@ -138,10 +138,7 @@ def _cityscapes_files_to_dict(files, from_json, to_polygons):
     Returns:
         A dict in Detectron2 Dataset format.
     """
-    from deeplearning.projects.cityscapesApi.cityscapesscripts.helpers.labels import (
-        id2label,
-        name2label,
-    )
+    from cityscapesscripts.helpers.labels import id2label, name2label
 
     image_file, instance_id_file, _, json_file = files
 
@@ -281,8 +278,7 @@ def _cityscapes_files_to_dict(files, from_json, to_polygons):
     return ret
 
 
-def main() -> None:
-    global logger, labels
+if __name__ == "__main__":
     """
     Test the cityscapes dataset loader.
 
@@ -297,9 +293,9 @@ def main() -> None:
     parser.add_argument("gt_dir")
     parser.add_argument("--type", choices=["instance", "semantic"], default="instance")
     args = parser.parse_args()
-    from deeplearning.projects.cityscapesApi.cityscapesscripts.helpers.labels import labels
     from detectron2.data.catalog import Metadata
     from detectron2.utils.visualizer import Visualizer
+    from cityscapesscripts.helpers.labels import labels
 
     logger = setup_logger(name=__name__)
 
@@ -331,7 +327,3 @@ def main() -> None:
         # cv2.waitKey()
         fpath = os.path.join(dirname, os.path.basename(d["file_name"]))
         vis.save(fpath)
-
-
-if __name__ == "__main__":
-    main()  # pragma: no cover

@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-# pyre-unsafe
-
 import pickle
 import torch
 from torch import nn
@@ -69,7 +67,7 @@ class VertexFeatureEmbedder(nn.Module):
             fpath (str): file path to load data from
         """
         with PathManager.open(fpath, "rb") as hFile:
-            data = pickle.load(hFile)
+            data = pickle.load(hFile)  # pyre-ignore[6]
             for name in ["features", "embeddings"]:
                 if name in data:
                     getattr(self, name).copy_(

@@ -1,14 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-# pyre-unsafe
-
 import os
 from typing import Dict, Optional
 
 from detectron2.config import CfgNode
 
 
-def is_relative_local_path(path: str) -> bool:
+def is_relative_local_path(path: str):
     path_str = os.fsdecode(path)
     return ("://" not in path_str) and not os.path.isabs(path)
 

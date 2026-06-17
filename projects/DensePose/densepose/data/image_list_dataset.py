@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-# pyre-unsafe
-
 import logging
 import numpy as np
 from typing import Any, Callable, Dict, List, Optional, Union
@@ -33,7 +31,7 @@ class ImageListDataset(Dataset):
             category_list (Union[str, List[str], None]): list of animal categories for
                 each image. If it is a string, or None, this applies to all images
         """
-        if type(category_list) is list:
+        if type(category_list) == list:
             self.category_list = category_list
         else:
             self.category_list = [category_list] * len(image_list)

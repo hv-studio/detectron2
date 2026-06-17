@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-# pyre-unsafe
-
 from typing import Any, List
 import torch
 from torch.nn import functional as F
@@ -116,7 +114,6 @@ class DensePoseChartLoss:
         j_valid_fg = interpolator.j_valid * (  # pyre-ignore[16]
             packed_annotations.fine_segm_labels_gt > 0
         )
-        # pyre-fixme[6]: For 1st param expected `Tensor` but got `int`.
         if not torch.any(j_valid_fg):
             return self.produce_fake_densepose_losses(densepose_predictor_outputs)
 

@@ -1,11 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-# pyre-unsafe
-
 from torch import nn
 
 
-def initialize_module_params(module: nn.Module) -> None:
+def initialize_module_params(module: nn.Module):
     for name, param in module.named_parameters():
         if "bias" in name:
             nn.init.constant_(param, 0)

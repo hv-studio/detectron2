@@ -4,7 +4,7 @@ import logging
 from detectron2.utils.file_io import PathHandler, PathManager
 
 
-class ModelCatalog:
+class ModelCatalog(object):
     """
     Store mappings from names to third-party models.
     """

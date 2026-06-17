@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-# pyre-unsafe
-
 from .catalog import MeshInfo, register_meshes
 
 DENSEPOSE_MESHES_DIR = "https://dl.fbaipublicfiles.com/densepose/meshes/"

@@ -1,6 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
-
-# pyre-unsafe
 from dataclasses import fields
 from typing import Any, List
 import torch
@@ -8,7 +6,7 @@ import torch
 from detectron2.structures import Instances
 
 
-def densepose_inference(densepose_predictor_output: Any, detections: List[Instances]) -> None:
+def densepose_inference(densepose_predictor_output: Any, detections: List[Instances]):
     """
     Splits DensePose predictor outputs into chunks, each chunk corresponds to
     detections on one image. Predictor output chunks are stored in `pred_densepose`
@@ -29,8 +27,7 @@ def densepose_inference(densepose_predictor_output: Any, detections: List[Instan
         if densepose_predictor_output is None:
             # don't add `pred_densepose` attribute
             continue
-        n_i = detection_i.__len__()
-
+        n_i = len(detection_i)
         PredictorOutput = type(densepose_predictor_output)
         output_i_dict = {}
         # we assume here that `densepose_predictor_output` is a dataclass object

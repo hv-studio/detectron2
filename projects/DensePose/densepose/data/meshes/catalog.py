@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-# pyre-unsafe
-
 import logging
 from collections import UserDict
 from dataclasses import dataclass
@@ -51,7 +49,7 @@ class _MeshCatalog(UserDict):
 MeshCatalog = _MeshCatalog()
 
 
-def register_mesh(mesh_info: MeshInfo, base_path: Optional[str]) -> None:
+def register_mesh(mesh_info: MeshInfo, base_path: Optional[str]):
     geodists, symmetry, texcoords = mesh_info.geodists, mesh_info.symmetry, mesh_info.texcoords
     if geodists:
         geodists = maybe_prepend_base_path(base_path, geodists)
@@ -68,6 +66,6 @@ def register_mesh(mesh_info: MeshInfo, base_path: Optional[str]) -> None:
     )
 
 
-def register_meshes(mesh_infos: Iterable[MeshInfo], base_path: Optional[str]) -> None:
+def register_meshes(mesh_infos: Iterable[MeshInfo], base_path: Optional[str]):
     for mesh_info in mesh_infos:
         register_mesh(mesh_info, base_path)

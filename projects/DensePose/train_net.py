@@ -62,7 +62,7 @@ def main(args):
     return trainer.train()
 
 
-def invoke_main() -> None:
+if __name__ == "__main__":
     args = default_argument_parser().parse_args()
     cfg = setup(args)
     timeout = (
@@ -78,7 +78,3 @@ def invoke_main() -> None:
         args=(args,),
         timeout=timeout,
     )
-
-
-if __name__ == "__main__":
-    invoke_main()  # pragma: no cover

@@ -1,6 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
-
-# pyre-unsafe
 import numpy as np
 from typing import Iterable, Optional, Tuple
 import cv2
@@ -10,7 +8,7 @@ from densepose.structures import DensePoseDataRelative
 from .base import Boxes, Image, MatrixVisualizer, PointsVisualizer
 
 
-class DensePoseDataCoarseSegmentationVisualizer:
+class DensePoseDataCoarseSegmentationVisualizer(object):
     """
     Visualizer for ground truth segmentation
     """
@@ -38,7 +36,7 @@ class DensePoseDataCoarseSegmentationVisualizer:
         return image_bgr
 
 
-class DensePoseDataPointsVisualizer:
+class DensePoseDataPointsVisualizer(object):
     def __init__(self, densepose_data_to_value_fn=None, cmap=cv2.COLORMAP_PARULA, **kwargs):
         self.points_visualizer = PointsVisualizer()
         self.densepose_data_to_value_fn = densepose_data_to_value_fn

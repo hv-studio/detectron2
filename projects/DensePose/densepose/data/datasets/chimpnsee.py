@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-# pyre-unsafe
-
 from typing import Optional
 
 from detectron2.data import DatasetCatalog, MetadataCatalog
@@ -12,7 +10,7 @@ from .dataset_type import DatasetType
 CHIMPNSEE_DATASET_NAME = "chimpnsee"
 
 
-def register_dataset(datasets_root: Optional[str] = None) -> None:
+def register_dataset(datasets_root: Optional[str] = None):
     def empty_load_callback():
         pass
 

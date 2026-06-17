@@ -1,6 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
-
-# pyre-unsafe
 import logging
 import numpy as np
 import cv2
@@ -10,7 +8,7 @@ Image = np.ndarray
 Boxes = torch.Tensor
 
 
-class MatrixVisualizer:
+class MatrixVisualizer(object):
     """
     Base visualizer for matrix data
     """
@@ -76,7 +74,7 @@ class MatrixVisualizer:
         assert mask.dtype == np.uint8
 
 
-class RectangleVisualizer:
+class RectangleVisualizer(object):
 
     _COLOR_GREEN = (18, 127, 15)
 
@@ -92,7 +90,7 @@ class RectangleVisualizer:
         return image_bgr
 
 
-class PointsVisualizer:
+class PointsVisualizer(object):
 
     _COLOR_GREEN = (18, 127, 15)
 
@@ -109,7 +107,7 @@ class PointsVisualizer:
         return image_bgr
 
 
-class TextVisualizer:
+class TextVisualizer(object):
 
     _COLOR_GRAY = (218, 227, 218)
     _COLOR_WHITE = (255, 255, 255)
@@ -148,12 +146,12 @@ class TextVisualizer:
                 image_bgr[y - t : y + txt_h + t, x - t : x + txt_w + t, :]
                 * self.frame_color_transparency
                 + np.array(self.frame_color_bgr) * (1.0 - self.frame_color_transparency)
-            ).astype(float)
+            ).astype(np.float)
         if self.fill_color_transparency < 1.0:
             image_bgr[y : y + txt_h, x : x + txt_w, :] = (
                 image_bgr[y : y + txt_h, x : x + txt_w, :] * self.fill_color_transparency
                 + np.array(self.fill_color_bgr) * (1.0 - self.fill_color_transparency)
-            ).astype(float)
+            ).astype(np.float)
         cv2.putText(
             image_bgr,
             txt,
@@ -173,7 +171,7 @@ class TextVisualizer:
         return txt_w, txt_h
 
 
-class CompoundVisualizer:
+class CompoundVisualizer(object):
     def __init__(self, visualizers):
         self.visualizers = visualizers
 

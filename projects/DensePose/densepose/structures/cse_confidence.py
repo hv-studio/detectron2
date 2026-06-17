@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 
-# pyre-unsafe
-
 from dataclasses import make_dataclass
 from functools import lru_cache
 from typing import Any, Optional
@@ -34,7 +32,7 @@ def decorate_cse_predictor_output_class_with_confidences(BasePredictorOutput: ty
 
     PredictorOutput = make_dataclass(
         BasePredictorOutput.__name__ + "WithConfidences",
-        fields=[
+        fields=[  # pyre-ignore[6]
             ("coarse_segm_confidence", Optional[torch.Tensor], None),
         ],
         bases=(BasePredictorOutput,),

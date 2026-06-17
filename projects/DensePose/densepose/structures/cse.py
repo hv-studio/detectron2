@@ -1,7 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-# pyre-unsafe
-
 from dataclasses import dataclass
 from typing import Union
 import torch

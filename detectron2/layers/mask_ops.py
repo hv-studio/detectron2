@@ -5,13 +5,15 @@ import torch
 from PIL import Image
 from torch.nn import functional as F
 
+from detectron2.structures import Boxes
+
 __all__ = ["paste_masks_in_image"]
 
 
 BYTES_PER_FLOAT = 4
 # TODO: This memory limit may be too much or too little. It would be better to
 # determine it based on available resources.
-GPU_MEM_LIMIT = 1024**3  # 1 GB memory limit
+GPU_MEM_LIMIT = 1024 ** 3  # 1 GB memory limit
 
 
 def _do_paste_mask(masks, boxes, img_h: int, img_w: int, skip_empty: bool = True):
@@ -69,10 +71,8 @@ def _do_paste_mask(masks, boxes, img_h: int, img_w: int, skip_empty: bool = True
         return img_masks[:, 0], ()
 
 
-# Annotate boxes as Tensor (but not Boxes) in order to use scripting
-@torch.jit.script_if_tracing
 def paste_masks_in_image(
-    masks: torch.Tensor, boxes: torch.Tensor, image_shape: Tuple[int, int], threshold: float = 0.5
+    masks: torch.Tensor, boxes: Boxes, image_shape: Tuple[int, int], threshold: float = 0.5
 ):
     """
     Paste a set of masks that are of a fixed resolution (e.g., 28 x 28) into an image.
@@ -185,7 +185,7 @@ def paste_mask_in_image_old(mask, box, img_h, img_w, threshold):
     # Resample the mask from it's original grid to the new samples_w x samples_h grid
     mask = Image.fromarray(mask.cpu().numpy())
     mask = mask.resize((samples_w, samples_h), resample=Image.BILINEAR)
-    mask = np.asarray(mask)
+    mask = np.array(mask, copy=False)
 
     if threshold >= 0:
         mask = np.array(mask > threshold, dtype=np.uint8)
@@ -258,18 +258,3 @@ def scale_boxes(boxes, scale):
     scaled_boxes[:, 1] = y_c - h_half
     scaled_boxes[:, 3] = y_c + h_half
     return scaled_boxes
-
-
-@torch.jit.script_if_tracing
-def _paste_masks_tensor_shape(
-    masks: torch.Tensor,
-    boxes: torch.Tensor,
-    image_shape: Tuple[torch.Tensor, torch.Tensor],
-    threshold: float = 0.5,
-):
-    """
-    A wrapper of paste_masks_in_image where image_shape is Tensor.
-    During tracing, shapes might be tensors instead of ints. The Tensor->int
-    conversion should be scripted rather than traced.
-    """
-    return paste_masks_in_image(masks, boxes, (int(image_shape[0]), int(image_shape[1])), threshold)

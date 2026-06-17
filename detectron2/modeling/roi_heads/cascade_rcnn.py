@@ -270,8 +270,7 @@ class CascadeROIHeads(StandardROIHeads):
         # but scale up the parameter gradients of the heads.
         # This is equivalent to adding the losses among heads,
         # but scale down the gradients on features.
-        if self.training:
-            box_features = _ScaleGradient.apply(box_features, 1.0 / self.num_cascade_stages)
+        box_features = _ScaleGradient.apply(box_features, 1.0 / self.num_cascade_stages)
         box_features = self.box_head[stage](box_features)
         return self.box_predictor[stage](box_features)
 

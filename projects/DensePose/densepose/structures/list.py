@@ -1,12 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
-
-# pyre-unsafe
 import torch
 
 from densepose.structures.data_relative import DensePoseDataRelative
 
 
-class DensePoseList:
+class DensePoseList(object):
 
     _TORCH_DEVICE_CPU = torch.device("cpu")
 

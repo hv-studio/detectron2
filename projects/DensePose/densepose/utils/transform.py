@@ -1,6 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
-
-# pyre-unsafe
 from detectron2.data import MetadataCatalog
 from detectron2.utils.file_io import PathManager
 

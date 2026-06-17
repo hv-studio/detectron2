@@ -1,9 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 import numpy as np
-from typing import List
 import pycocotools.mask as mask_util
 
-from detectron2.structures import Instances
 from detectron2.utils.visualizer import (
     ColorMode,
     Visualizer,
@@ -11,7 +9,7 @@ from detectron2.utils.visualizer import (
     _PanopticPrediction,
 )
 
-from .colormap import random_color, random_colors
+from .colormap import random_color
 
 
 class _DetectedInstance:
@@ -51,10 +49,6 @@ class VideoVisualizer:
             ColorMode.IMAGE_BW,
         ], "Other mode not supported yet."
         self._instance_mode = instance_mode
-        self._max_num_instances = self.metadata.get("max_num_instances", 74)
-        self._assigned_colors = {}
-        self._color_pool = random_colors(self._max_num_instances, rgb=True, maximum=1)
-        self._color_idx_set = set(range(len(self._color_pool)))
 
     def draw_instance_predictions(self, frame, predictions):
         """
@@ -79,13 +73,6 @@ class VideoVisualizer:
         classes = predictions.pred_classes.numpy() if predictions.has("pred_classes") else None
         keypoints = predictions.pred_keypoints if predictions.has("pred_keypoints") else None
         colors = predictions.COLOR if predictions.has("COLOR") else [None] * len(predictions)
-        periods = predictions.ID_period if predictions.has("ID_period") else None
-        period_threshold = self.metadata.get("period_threshold", 0)
-        visibilities = (
-            [True] * len(predictions)
-            if periods is None
-            else [x > period_threshold for x in periods]
-        )
 
         if predictions.has("pred_masks"):
             masks = predictions.pred_masks
@@ -95,16 +82,12 @@ class VideoVisualizer:
         else:
             masks = None
 
+        detected = [
+            _DetectedInstance(classes[i], boxes[i], mask_rle=None, color=colors[i], ttl=8)
+            for i in range(num_instances)
+        ]
         if not predictions.has("COLOR"):
-            if predictions.has("ID"):
-                colors = self._assign_colors_by_id(predictions)
-            else:
-                # ToDo: clean old assign color method and use a default tracker to assign id
-                detected = [
-                    _DetectedInstance(classes[i], boxes[i], mask_rle=None, color=colors[i], ttl=8)
-                    for i in range(num_instances)
-                ]
-                colors = self._assign_colors(detected)
+            colors = self._assign_colors(detected)
 
         labels = _create_text_labels(classes, scores, self.metadata.get("thing_classes", None))
 
@@ -119,22 +102,12 @@ class VideoVisualizer:
         else:
             alpha = 0.5
 
-        labels = (
-            None
-            if labels is None
-            else [y[0] for y in filter(lambda x: x[1], zip(labels, visibilities))]
-        )  # noqa
-        assigned_colors = (
-            None
-            if colors is None
-            else [y[0] for y in filter(lambda x: x[1], zip(colors, visibilities))]
-        )  # noqa
         frame_visualizer.overlay_instances(
-            boxes=None if masks is not None else boxes[visibilities],  # boxes are a bit distracting
-            masks=None if masks is None else masks[visibilities],
+            boxes=None if masks is not None else boxes,  # boxes are a bit distracting
+            masks=masks,
             labels=labels,
-            keypoints=None if keypoints is None else keypoints[visibilities],
-            assigned_colors=assigned_colors,
+            keypoints=keypoints,
+            assigned_colors=colors,
             alpha=alpha,
         )
 
@@ -218,7 +191,7 @@ class VideoVisualizer:
         """
 
         # Compute iou with either boxes or masks:
-        is_crowd = np.zeros((len(instances),), dtype=bool)
+        is_crowd = np.zeros((len(instances),), dtype=np.bool)
         if instances[0].bbox is None:
             assert instances[0].mask_rle is not None
             # use mask iou only when box iou is None
@@ -264,24 +237,3 @@ class VideoVisualizer:
                 inst.color = random_color(rgb=True, maximum=1)
         self._old_instances = instances[:] + extra_instances
         return [d.color for d in instances]
-
-    def _assign_colors_by_id(self, instances: Instances) -> List:
-        colors = []
-        untracked_ids = set(self._assigned_colors.keys())
-        for id in instances.ID:
-            if id in self._assigned_colors:
-                colors.append(self._color_pool[self._assigned_colors[id]])
-                untracked_ids.remove(id)
-            else:
-                assert (
-                    len(self._color_idx_set) >= 1
-                ), f"Number of id exceeded maximum, \
-                    max = {self._max_num_instances}"
-                idx = self._color_idx_set.pop()
-                color = self._color_pool[idx]
-                self._assigned_colors[id] = idx
-                colors.append(color)
-        for id in untracked_ids:
-            self._color_idx_set.add(self._assigned_colors[id])
-            del self._assigned_colors[id]
-        return colors

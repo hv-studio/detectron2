@@ -1,6 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
-
-# pyre-unsafe
 import logging
 import numpy as np
 from typing import List, Optional, Tuple
@@ -13,7 +11,7 @@ from ..structures import DensePoseChartResult
 from .base import Boxes, Image, MatrixVisualizer
 
 
-class DensePoseResultsVisualizer:
+class DensePoseResultsVisualizer(object):
     def visualize(
         self,
         image_bgr: Image,
