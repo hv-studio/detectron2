@@ -39,7 +39,7 @@ def get_version():
 
 def get_extensions():
     this_dir = path.dirname(path.abspath(__file__))
-    extensions_dir = path.join(this_dir, "detectron2", "layers", "csrc")
+    extensions_dir = path.join("detectron2", "layers", "csrc")
 
     main_source = path.join(extensions_dir, "vision.cpp")
     sources = glob.glob(path.join(extensions_dir, "**", "*.cpp"))
@@ -60,7 +60,7 @@ def get_extensions():
 
     extension = CppExtension
 
-    extra_compile_args = {"cxx": []}
+    extra_compile_args = {"cxx": ["/utf-8"] if os.name == "nt" else []}
     define_macros = []
 
     if (torch.cuda.is_available() and ((CUDA_HOME is not None) or is_rocm_pytorch)) or os.getenv(
@@ -88,7 +88,7 @@ def get_extensions():
             if CC is not None:
                 extra_compile_args["nvcc"].append("-ccbin={}".format(CC))
 
-    include_dirs = [extensions_dir]
+    include_dirs = [path.join(this_dir, extensions_dir)]
 
     ext_modules = [
         extension(
